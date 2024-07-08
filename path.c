@@ -1674,6 +1674,21 @@ char *xdg_cache_home(const char *filename)
 	return NULL;
 }
 
+char *xdg_state_home(const char *filename)
+{
+	const char *home, *state_home;
+
+	assert(filename);
+	state_home = getenv("XDG_STATE_HOME");
+	if (state_home && *state_home)
+		return mkpathdup("%s/git/%s", state_home, filename);
+
+	home = getenv("HOME");
+	if (home)
+		return mkpathdup("%s/.local/state/git/%s", home, filename);
+	return NULL;
+}
+
 REPO_GIT_PATH_FUNC(squash_msg, "SQUASH_MSG")
 REPO_GIT_PATH_FUNC(merge_msg, "MERGE_MSG")
 REPO_GIT_PATH_FUNC(merge_rr, "MERGE_RR")

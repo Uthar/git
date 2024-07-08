@@ -213,6 +213,8 @@ char *xdg_config_home(const char *filename);
  */
 char *xdg_cache_home(const char *filename);
 
+char *xdg_state_home(const char *filename);
+
 /*
  * Create a directory and (if share is nonzero) adjust its permissions
  * according to the shared_repository setting. Only use this for
