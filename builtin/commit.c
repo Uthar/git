@@ -42,6 +42,7 @@
 #include "commit-graph.h"
 #include "pretty.h"
 #include "trailer.h"
+#include "worktree-db.h"
 
 static const char * const builtin_commit_usage[] = {
 	N_("git commit [-a | --interactive | --patch] [-s] [-v] [-u[<mode>]] [--amend]\n"
@@ -1583,6 +1584,10 @@ struct repository *repo UNUSED)
 
 	prepare_repo_settings(the_repository);
 	the_repository->settings.command_requires_full_index = 0;
+
+  open_worktree_db(&worktree_db);
+  register_worktree_in_db(worktree_db, the_repository->worktree);
+  close_worktree_db(worktree_db);
 
 	status_init_config(&s, git_status_config);
 	argc = parse_options(argc, argv, prefix,

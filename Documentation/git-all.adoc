@@ -1,0 +1,68 @@
+git-all(1)
+==========
+
+NAME
+----
+git-all - Operate on all known worktrees
+
+SYNOPSIS
+--------
+[verse]
+'git all' [--[no-]git] [--[no-]invert-glob | -i] [--glob | -g]
+	  [--] [<command>...]
+
+DESCRIPTION
+-----------
+This command executes an operation on all known worktrees matching a glob. An
+operation can be a git subcommand or any other external program.  Known
+worktrees are being tracked in a local file on disk. Worktrees that no longer
+exist are automatically forgotten.
+
+
+
+OPTIONS
+-------
+--[no-]git::
+	Treat <command> as a git subcommand.
+
+-g::
+--glob::
+	Only consider worktrees that match the provided glob. By default, all
+  worktrees are selected, which is equivalent to the glob '*'.
+
+-i::
+--[no-]invert-glob::
+	Inverts the behavior of glob. Operate only on worktrees that do not
+  match it.
+   
+<command>...::
+	The command to be executed.
+
+EXAMPLES
+--------
+
+* Displays status of all worktrees.
++
+------------
+$ git all status
+------------
+
+* Update repositories matching 'work'.
++
+------------
+$ git all --glob '*work*' fetch
+------------
+
+* Run a program in all known worktrees,
++
+------------
+$ git all --no-git pwd
+------------
+
+SEE ALSO
+--------
+linkgit:git-status[1]
+
+GIT
+---
+Part of the linkgit:git[1] suite
