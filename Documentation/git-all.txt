@@ -1,0 +1,39 @@
+git-all(1)
+==========
+
+NAME
+----
+git-all - Operate on all known repositories
+
+SYNOPSIS
+--------
+[verse]
+'git all' 
+	  [--] [<command>...]
+
+DESCRIPTION
+-----------
+This command executes an operation on all known repositories. Known repositories
+are being tracked in a local file on disk.
+
+OPTIONS
+-------
+<command>...::
+	The command to be executed.
+
+EXAMPLES
+--------
+
+* Displays status of all repositories.
++
+------------
+$ git all status
+------------
+
+SEE ALSO
+--------
+linkgit:git-status[1]
+
+GIT
+---
+Part of the linkgit:git[1] suite

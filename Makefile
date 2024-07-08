@@ -1188,6 +1188,7 @@ LIB_OBJS += versioncmp.o
 LIB_OBJS += walker.o
 LIB_OBJS += wildmatch.o
 LIB_OBJS += worktree.o
+LIB_OBJS += worktree-db.o
 LIB_OBJS += wrapper.o
 LIB_OBJS += write-or-die.o
 LIB_OBJS += ws.o
@@ -1195,6 +1196,7 @@ LIB_OBJS += wt-status.o
 LIB_OBJS += xdiff-interface.o
 
 BUILTIN_OBJS += builtin/add.o
+BUILTIN_OBJS += builtin/all.o
 BUILTIN_OBJS += builtin/am.o
 BUILTIN_OBJS += builtin/annotate.o
 BUILTIN_OBJS += builtin/apply.o
@@ -1575,6 +1577,8 @@ ifdef NO_LIBGEN_H
 	COMPAT_CFLAGS += -DNO_LIBGEN_H
 	COMPAT_OBJS += compat/basename.o
 endif
+
+EXTLIBS += -lsqlite3
 
 ifdef USE_LIBPCRE1
 $(error The USE_LIBPCRE1 build option has been removed, use version 2 with USE_LIBPCRE)

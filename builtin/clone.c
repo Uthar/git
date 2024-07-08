@@ -43,6 +43,7 @@
 #include "hook.h"
 #include "bundle.h"
 #include "bundle-uri.h"
+#include "worktree-db.h"
 
 /*
  * Overall FIXMEs:
@@ -1514,6 +1515,10 @@ int cmd_clone(int argc, const char **argv, const char *prefix)
 			   !is_local);
 
 	update_head(our_head_points_at, remote_head, unborn_head, reflog_msg.buf);
+
+  open_worktree_db(&worktree_db);
+  register_worktree_in_db(worktree_db, the_repository->worktree);
+  close_worktree_db(worktree_db);
 
 	/*
 	 * We want to show progress for recursive submodule clones iff
