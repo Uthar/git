@@ -2,35 +2,32 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <libgen.h>
-#include <libgen.h>
 #include <sys/stat.h>
-#include "worktree-db.h"
 #include "path.h"
 #include "string-list.h"
+#include "worktree-db.h"
 
-void mkdirp(char* dir) {
-  struct string_list dirs;
-  string_list_init_dup(&dirs);
-  char *up = dir;
-  while (strcmp(up, "/")) {
-    string_list_append(&dirs, dir);
-    up = dirname(up);
+// na podstawie openbsd, ale omija pathname-name, tzn. wymaga kończącego '/'
+void mkdirs(char* path) {
+  for(char *dir = path;;) {
+    dir += strspn(dir, "/");
+    dir += strcspn(dir, "/");
+    if (*dir == '\0') break;
+    *dir = '\0';
+    mkdir(path,0700);
+    *dir = '/';
   }
-  for (size_t n = dirs.nr; n; n--)
-    mkdir(dirs.items[n].string,0777);
-  string_list_clear(&dirs, 1);
 }
 
-sqlite3 *worktree_db;
+sqlite3 *worktree_db = NULL;
 
 void open_worktree_db(sqlite3 **db) {
-  char *conf_dir = xdg_config_home("");
-  char *git_db = xdg_config_home("git.db");
-  mkdirp(conf_dir);
-  free(conf_dir);
-  sqlite3_open(git_db, db);
-  free(git_db);
+  struct stat st;
+  char *db_path = xdg_state_home("git.db");
+  if (!db_path) return;
+  if (stat(db_path,&st)) mkdirs(db_path);
+  sqlite3_open(db_path, db);
+  free(db_path);
   sqlite3_exec(*db,
                "create table if not exists worktrees("
                "path unique not null,"
