@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <sys/stat.h>
+#include <sqlite3.h>
 #include "path.h"
 #include "string-list.h"
 #include "worktree-db.h"
@@ -57,17 +58,25 @@ void delete_worktree_from_db(sqlite3 *db, const char *worktree) {
   sqlite3_finalize(stmt);
 }
 
-void all_worktrees_from_db(sqlite3 *db, struct string_list *out) {
+void for_each_worktree_in_db(sqlite3 *db, const char * glob, int invert_glob,
+                             void (*cb)(const char* worktree, const char **cmd),
+                             const char **cmd) {
   sqlite3_stmt *stmt;
   struct stat st;
-  sqlite3_prepare_v2(db, "select * from worktrees;", -1, &stmt, NULL);
+  const char *sql;
+  if (invert_glob)
+    sql = "select * from worktrees where path not glob ?;";
+  else
+    sql ="select * from worktrees where path glob ?;";
+  sqlite3_prepare_v2(db, sql, -1, &stmt, NULL);
+  sqlite3_bind_text(stmt, 1, glob, -1, SQLITE_STATIC);
   while (SQLITE_ROW == sqlite3_step(stmt)) {
     char *worktree = (char *)sqlite3_column_blob(stmt, 0);
     if (!stat(worktree, &st))
-      string_list_append(out, worktree);
+      cb(worktree, cmd);
     else
       delete_worktree_from_db(db, worktree);
       
   }
-  sqlite3_finalize(stmt);
+  sqlite3_finalize(stmt);  
 }

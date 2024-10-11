@@ -12,6 +12,8 @@ void close_worktree_db(sqlite3 *db);
 
 void register_worktree_in_db(sqlite3 *db, const char *worktree);
 
-void all_worktrees_from_db(sqlite3 *db, struct string_list *out);
+void for_each_worktree_in_db(sqlite3 *db, const char * glob, int invert_glob,
+                             void (*cb)(const char* worktree, const char **cmd),
+                             const char **cmd);
 
 #endif // WORKTREE_DB_H
