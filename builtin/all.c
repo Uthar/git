@@ -14,13 +14,13 @@
 int git_cmd = 1;
 
 void run_in_worktree(const char* worktree, const char** argv) {
+  color_fprintf_ln(stdout, GIT_COLOR_BOLD, "%s: %s", N_("worktree"), worktree);
+  if (!argv || !*argv) return;
   struct child_process cmd = CHILD_PROCESS_INIT;
   cmd.dir = worktree;
   cmd.git_cmd = git_cmd;
   strvec_pushv(&cmd.args, argv);
-  color_fprintf_ln(stdout, GIT_COLOR_BOLD, "%s: %s", N_("worktree"), worktree);
   run_command(&cmd);
-  printf("\n\n");
 }
 
 int cmd_all(int argc, const char **argv, const char *prefix)
