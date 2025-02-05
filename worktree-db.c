@@ -21,21 +21,21 @@ void mkdirs(char* path) {
 }
 
 sqlite3 *worktree_db = NULL;
+char *db_path = NULL;
 
 void open_worktree_db(sqlite3 **db) {
   struct stat st;
-  char *db_path = xdg_state_home("git.db");
+  if (!db_path) db_path = xdg_state_home("git.db");
   if (!db_path) return;
   if (stat(db_path,&st)) mkdirs(db_path);
   sqlite3_open(db_path, db);
-  free(db_path);
   sqlite3_exec(*db,
-               "create table if not exists worktrees("
-               "path unique not null,"
-               "created default (unixepoch('now','subsec'))"
-               ");",
-               NULL, NULL, NULL);
-  
+    "create table if not exists worktrees("
+    "path unique not null,"
+    "created default (unixepoch('now','subsec'))"
+    ");",
+    NULL, NULL, NULL
+  );
 }
 
 void close_worktree_db(sqlite3 *db) {
@@ -58,16 +58,17 @@ void delete_worktree_from_db(sqlite3 *db, const char *worktree) {
   sqlite3_finalize(stmt);
 }
 
-void for_each_worktree_in_db(sqlite3 *db, const char * glob, int invert_glob,
-                             void (*cb)(const char* worktree, const char **cmd),
-                             const char **cmd) {
+void for_each_worktree_in_db
+  (sqlite3 *db, const char * glob, int invert_glob,
+   void (*cb)(const char* worktree, const char **cmd),
+   const char **cmd) {
   sqlite3_stmt *stmt;
   struct stat st;
   const char *sql;
   if (invert_glob)
     sql = "select * from worktrees where path not glob ?;";
   else
-    sql ="select * from worktrees where path glob ?;";
+    sql = "select * from worktrees where path glob ?;";
   sqlite3_prepare_v2(db, sql, -1, &stmt, NULL);
   sqlite3_bind_text(stmt, 1, glob, -1, SQLITE_STATIC);
   while (SQLITE_ROW == sqlite3_step(stmt)) {
@@ -76,7 +77,6 @@ void for_each_worktree_in_db(sqlite3 *db, const char * glob, int invert_glob,
       cb(worktree, cmd);
     else
       delete_worktree_from_db(db, worktree);
-      
   }
   sqlite3_finalize(stmt);  
 }

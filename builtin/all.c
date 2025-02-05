@@ -12,6 +12,8 @@
 #include "run-command.h"
 
 int git_cmd = 1;
+int invert_glob = 0;
+const char *glob = "*";
 
 void run_in_worktree(const char* worktree, const char** argv) {
   color_fprintf_ln(stdout, GIT_COLOR_BOLD, "%s: %s", N_("worktree"), worktree);
@@ -25,16 +27,12 @@ void run_in_worktree(const char* worktree, const char** argv) {
 
 int cmd_all(int argc, const char **argv, const char *prefix)
 {
-
-  const char *glob = "*";
-  int invert_glob = 0;
   const char * const usage[] = {
     N_("git all [<options>] [--] <command>..."),
     NULL
   };
   const struct option options[] = {
-    OPT_STRING_F('g', "glob", &glob, N_("glob"), N_("filter worktrees by glob"),
-                 PARSE_OPT_NONEG),
+    OPT_STRING_F('g', "glob", &glob, N_("glob"), N_("filter worktrees by glob"), PARSE_OPT_NONEG),
     OPT_BOOL('i', "invert-glob", &invert_glob, N_("skip by glob instead")),
     OPT_BOOL('\0', "git", &git_cmd, N_("treat as git subcommand")),
     OPT_END(),
