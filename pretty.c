@@ -1848,26 +1848,8 @@ static size_t format_and_pad_commit(struct strbuf *sb, /* in UTF-8 */
 	}
 
 	if (len > padding) {
-		switch (c->truncate) {
-		case trunc_left:
-			strbuf_utf8_replace(&local_sb,
-					    0, len - (padding - 2),
-					    "..");
-			break;
-		case trunc_middle:
-			strbuf_utf8_replace(&local_sb,
-					    padding / 2 - 1,
-					    len - (padding - 2),
-					    "..");
-			break;
-		case trunc_right:
-			strbuf_utf8_replace(&local_sb,
-					    padding - 2, len - (padding - 2),
-					    "..");
-			break;
-		case trunc_none:
-			break;
-		}
+		if (c->truncate != trunc_none) 
+			strbuf_setlen(&local_sb, padding);
 		strbuf_addbuf(sb, &local_sb);
 	} else {
 		size_t sb_len = sb->len, offset = 0;

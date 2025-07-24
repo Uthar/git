@@ -148,13 +148,10 @@ The placeholders are:
 ++%m++:: left (`<`), right (`>`) or boundary (`-`) mark
 ++%w(++`[<w>[,<i1>[,<i2>]]]`++)++:: switch line wrapping, like the `-w` option of
 			    linkgit:git-shortlog[1].
-++%<(++`<n>[,(trunc|ltrunc|mtrunc)]`++)++:: make the next placeholder take at
+++%<(++`<n>[,(trunc)]`++)++:: make the next placeholder take at
 				  least N column widths, padding spaces on
 				  the right if necessary.  Optionally
-				  truncate (with ellipsis `..`) at the left (ltrunc) `..ft`,
-				  the middle (mtrunc) `mi..le`, or the end
-				  (trunc) `rig..`, if the output is longer than
-				  _<n>_ columns.
+				  truncate (trunc) if the output is longer than _<n>_ columns.
 				  Note 1: that truncating
 				  only works correctly with _<n>_ >= 2.
 				  Note 2: spaces around the _<n>_ and _<m>_ (see below)
