@@ -41,7 +41,6 @@ int cmd_all(int argc, const char **argv, const char *prefix, struct repository *
 
   parse_options(argc, argv, prefix, options, usage, 0);
   repo_config(repo, git_default_config, NULL);
-  git_config_push_parameter("credential.interactive=false");
   if (want_color(GIT_COLOR_AUTO)) color = GIT_COLOR_BOLD;
   open_worktree_db(&worktree_db);
   for_each_worktree_in_db(worktree_db, glob, invert_glob, run_in_worktree, argv);
